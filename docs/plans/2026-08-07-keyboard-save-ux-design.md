@@ -1,0 +1,8 @@
+# Keyboard and Save UX Design
+
+The game will keep its current thin React event-routing layer and Zustand game rules. Keyboard handling remains in `App`, because it already owns board-wide Escape, erase, pause, arrow, and symbol input. Ordinary `1`–`9` and `A`–`G` keys call `inputDigit`, preserving the existing ability to replace an editable value without erasing first. Holding Shift routes the same symbol to `toggleCandidate` for the selected cell; candidate storage already supplies the requested add/remove toggle. Digit keys are decoded from `KeyboardEvent.code` while Shift is held because `event.key` becomes punctuation on common keyboard layouts. Letters use the existing symbol decoder. Ctrl/Cmd+Z invokes undo, and Ctrl/Cmd+Shift+Z invokes redo, with browser defaults suppressed only when a supported game shortcut is handled.
+
+The sidebar will group the New Game button with a human-readable current difficulty directly beneath it. The transfer section becomes “Save Game / Restore Game,” including accessible region and input labels. A save adds an ISO `exportedAt` metadata field to the JSON and downloads with a filesystem-safe local date/time in the filename. Restore remains backward compatible because the decoder ignores optional metadata.
+
+Presentation changes stay in CSS: remaining-count text becomes bold; candidates use a local handwritten font stack so the app has no network font dependency; and the settings control receives a larger hit target and glyph. Tests exercise real rendered controls and keyboard events. A small pure filename helper makes local timestamp formatting deterministic without mocking browser internals. Existing undo history, conflict protection, candidate guards, and persistence formats remain otherwise unchanged.
+

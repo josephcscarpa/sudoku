@@ -1,0 +1,5 @@
+# Candidate Conflict Highlighting Design
+
+Candidate conflicts will remain derived presentation state. For each empty cell, the UI asks the existing engine `legalCandidates` function for digits not already filled in that cell’s row, column, or box. An active note absent from that legal set receives a shared conflict class on both the small board candidate and the enlarged candidate-pad button. Inactive candidate options remain neutral: the warning appears only after the player actually records the contradictory note.
+
+This avoids adding redundant flags to game snapshots, imports, or undo history, and it automatically stays correct as filled values change. The visual treatment uses the game’s existing error-red palette with a pale red background and stronger border. Candidate buttons also expose `aria-invalid="true"`, ensuring the state is not communicated by color alone. An application-level test creates one legal and one conflicting candidate, then verifies both board and enlarged representations agree.

@@ -1,0 +1,9 @@
+# Welcome Screen Design
+
+On page load, the application will show a full-page welcome layer before rendering an interactive game. The persistence adapter will expose a pure check for an active saved game: a valid `sudoku-clone/v1` payload whose status is `playing` or `paused`. The normal restore path remains responsible for validating and restoring the full game. Invalid saves continue to be cleared by the existing startup recovery behavior.
+
+When an active save exists, the welcome layer presents two choices: Resume Game and New Game. Resume dismisses the layer without mutating the restored Zustand state. New Game moves to the existing board-size and difficulty selection flow. When there is no active save, or when the saved game is won or lost, the welcome layer opens directly on that New Game flow and does not offer Resume Game. Starting a game uses the existing generator and `loadGame`, which also causes persistence to replace the prior save.
+
+The in-game New Game button keeps its existing confirmation modal and replacement copy. Startup controls are rendered as a distinct accessible dialog-like region with a heading, a short introduction, and responsive styling. The game layout is not mounted behind the welcome screen, and global keyboard shortcuts ignore input while either startup or in-game New Game UI is open. This prevents an unseen restored game from changing before the player chooses Resume.
+
+`App` accepts an injectable initial welcome mode for isolated component tests. Production defaults derive from the default store's startup persistence result; custom stores retain the existing direct-game default unless a test or embedding caller opts into a welcome mode. Tests cover active-game choices, direct New Game startup, no Resume option for completed saves, state preservation on Resume, and keyboard isolation.
